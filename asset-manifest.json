@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/volsashgeo/Todo-App/static/css/main.48dc6328.css",
+    "main.js": "/volsashgeo/Todo-App/static/js/main.3635db24.js",
+    "index.html": "/volsashgeo/Todo-App/index.html",
+    "main.48dc6328.css.map": "/volsashgeo/Todo-App/static/css/main.48dc6328.css.map",
+    "main.3635db24.js.map": "/volsashgeo/Todo-App/static/js/main.3635db24.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.48dc6328.css",
+    "static/js/main.3635db24.js"
+  ]
+}
