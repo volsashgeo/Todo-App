@@ -5,60 +5,134 @@ import './app.css'
 import TaskList from "../task-list";
 import Footer from "../footer";
 import NewTaskForm from "../new-task-form";
+import { logDOM } from "@testing-library/react";
 
 export default class App extends Component {
+  maxId = 1;
 
-    state = {
-        todoData: [
-            {
-              description: "Completed task",
-              created: formatDistanceToNow(new Date()),
-              classname: "completed",
-              id: 1,
-            },
-            {
-              description: "Editing task",
-              created: formatDistanceToNow(new Date()),
-              classname: "editing",
-              id: 2,
-            },
-            {
-              description: "Active task",
-              created: formatDistanceToNow(new Date()),
-              classname: "active",
-              id: 3,
-            },
-        ]
+  state = {
+    todoData: [
+      this.createTodoTask("Completed task"),
+      this.createTodoTask("Editing task"),
+      this.createTodoTask("Active task"),
+    ],
+    filter: "all",
+  };
+
+  createTodoTask(description) {
+    return {
+      description,
+      created: formatDistanceToNow(new Date()),
+      classname: "active",
+      completed: false,
+      id: this.maxId++,
+    };
+  }
+
+  deleteTask = (id) => {
+    this.setState(({ todoData }) => {
+      const index = todoData.findIndex((el) => el.id === id);
+
+      const newArr = [
+        ...todoData.slice(0, index),
+        ...todoData.slice(index + 1),
+      ];
+
+      return {
+        todoData: newArr
+      };
+    });
+  };
+
+  onToggleCompleted = (id) => {
+    this.setState(({ todoData }) => {
+      const index = todoData.findIndex((el) => el.id === id);
+
+      const oldItem = todoData[index];
+
+      const newItem = { ...oldItem, completed: !oldItem.completed };
+
+      const newArr = [
+        ...todoData.slice(0, index),
+        newItem,
+        ...todoData.slice(index + 1),
+      ];
+
+      return {
+        todoData: newArr,
+      };
+    });
+  };
+
+  addTask = (description) => {
+    const newItem = this.createTodoTask(description);
+
+    this.setState(({ todoData }) => {
+      const newArr = [...todoData, newItem];
+
+      return {
+        todoData: newArr,
+      };
+    });
+  };
+
+  onClickFilters = (event) => {
+    this.setState(() => {
+      const filterValue = event.target.innerText.toLowerCase();
+      const filtersList = document.querySelector(".filters");
+      const filterItems = filtersList.querySelectorAll("button");
+
+      for (let filter of filterItems) {
+        filter.classList.remove("selected");
+      }
+      event.target.classList.add("selected");
+
+      return {
+        filter: filterValue,
+      };
+    });
+  };
+
+  onClickClearCompleted = () => {
+
+    const idCompletedArr = [];
+
+    this.state.todoData.forEach( (item) => {
+        if(item.completed === true) {
+            idCompletedArr.push(item.id);
+        }
+    })
+
+    for (let id of idCompletedArr) {
+        this.deleteTask(id);
     }
+  }
 
-    deleteTask = (id) => {
-        this.setState(({todoData}) => {
+  render() {
 
-            const index = todoData.findIndex((el) => el.id === id);
+    const { todoData, filter } = this.state;
+    const todoLeftCount = todoData.filter((el) => !el.completed).length;
 
-            const newArr = [ ...todoData.slice(0, index), ...todoData.slice(index + 1)]
-
-            return {
-                todoData: newArr
-            }
-        })
-    }
-
-    render() {
-        return (
-            <section className = "todoapp">
-              <header className = "header">
-                <h1>todos</h1>
-                <NewTaskForm />
-              </header>
-              <section className="main">
-                <TaskList
-                todos = { this.state.todoData }
-                onDeleted = { this.deleteTask }/>
-                <Footer />
-              </section>
-            </section>
-          );
-    }
-
+    return (
+      <section className="todoapp">
+        <header className="header">
+          <h1>todos</h1>
+          <NewTaskForm onTaskAdded={this.addTask} />
+        </header>
+        <section className="main">
+          <TaskList
+            todos={todoData}
+            filter = {filter }
+            onDeleted={this.deleteTask}
+            onToggleCompleted={this.onToggleCompleted}
+          />
+          <Footer
+            todoLeft={todoLeftCount}
+            onClickFilters={this.onClickFilters}
+            onClickClearCompleted = {this.onClickClearCompleted}
+          />
+        </section>
+      </section>
+    );
+  }
 }

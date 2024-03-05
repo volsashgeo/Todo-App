@@ -3,24 +3,17 @@ import "./task.css";
 
 export default class Task extends Component {
 
-  state = {
-    completed: false
-  };
-
-  onTaskClick = () => {
-    this.setState(({completed}) => {
-      return {
-        completed: !completed
-      }
-    });
-  };
-
   render() {
-    const { description, created, classname, onDeleted } = this.props;
 
-    const { completed } = this.state;
+    const { description,
+            created,
+            classname,
+            onDeleted,
+            onToggleCompleted,
+            completed
+          } = this.props;
 
-    let classNames = { classname };
+    let classNames =  classname ;
 
     if(completed) {
       classNames = 'completed';
@@ -37,10 +30,12 @@ export default class Task extends Component {
               </span>
               <span className="created">{ created }</span>
             </label>
-            <button className="icon icon-edit"></button>
+            <button className="icon icon-edit">
+            </button>
             <button
               className="icon icon-destroy"
-            ></button>
+              onClick = { onDeleted }>
+            </button>
           </div>
           <input type="text" className="edit" value="Editing task" />
         </li>
@@ -49,14 +44,17 @@ export default class Task extends Component {
       return (
         <li className={ classNames }>
           <div className="view">
-            <input className="toggle" type="checkbox" />
+            <input className="toggle" type="checkbox" onClick = { onToggleCompleted }/>
             <label>
               <span
-              className="description"
-              onClick = { this.onTaskClick }>{ description }</span>
+                className="description"
+              >
+                { description }
+              </span>
               <span className="created">{ created }</span>
             </label>
-            <button className="icon icon-edit"></button>
+            <button className="icon icon-edit"
+              ></button>
             <button
               className="icon icon-destroy"
               onClick = { onDeleted }>
