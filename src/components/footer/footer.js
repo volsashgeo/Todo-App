@@ -1,19 +1,24 @@
-import React from "react";
-import TasksFilter from "../tasks-filter";
+import React from 'react';
+
+import TasksFilter from '../tasks-filter';
 import './footer.css';
 
-
-const Footer = ({ todoLeft, onClickFilters, onClickClearCompleted }) => {
+function Footer({ todoLeft, onClickFilters, onClickClearCompleted }) {
   return (
     <footer className="footer">
       <span className="todo-count">{todoLeft} items left</span>
-      < TasksFilter onClickFilters = { (event) => onClickFilters(event)}
-      />
-      <button className="clear-completed"
-              onClick = { onClickClearCompleted }
-      >Clear completed</button>
+      <TasksFilter onClickFilters={(event) => onClickFilters(event)} />
+      <button className="clear-completed" onClick={onClickClearCompleted} type="button">
+        Clear completed
+      </button>
     </footer>
   );
+}
+
+Footer.defaultProps = {
+  todoLeft: 0,
+  onClickFilters: () => {},
+  onClickClearCompleted: () => {},
 };
 
 export default Footer;

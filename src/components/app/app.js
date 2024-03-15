@@ -1,45 +1,30 @@
-import React, { Component } from "react";
-import formatDistanceToNow from "date-fns/formatDistanceToNow";
-import './app.css'
+import React, { Component } from 'react';
+import './app.css';
 
-import TaskList from "../task-list";
-import Footer from "../footer";
-import NewTaskForm from "../new-task-form";
-import { logDOM } from "@testing-library/react";
+import TaskList from '../task-list';
+import Footer from '../footer';
+import NewTaskForm from '../new-task-form';
 
 export default class App extends Component {
   maxId = 1;
 
   state = {
     todoData: [
-      this.createTodoTask("Completed task"),
-      this.createTodoTask("Editing task"),
-      this.createTodoTask("Active task"),
+      this.createTodoTask('Completed task', new Date('2024-03-05T13:24:00')),
+      this.createTodoTask('Editing task', new Date('2024-03-05T13:24:00')),
+      this.createTodoTask('Active task', new Date('2024-03-05T13:24:00')),
     ],
-    filter: "all",
+    filter: 'all',
   };
-
-  createTodoTask(description) {
-    return {
-      description,
-      created: formatDistanceToNow(new Date()),
-      classname: "active",
-      completed: false,
-      id: this.maxId++,
-    };
-  }
 
   deleteTask = (id) => {
     this.setState(({ todoData }) => {
       const index = todoData.findIndex((el) => el.id === id);
 
-      const newArr = [
-        ...todoData.slice(0, index),
-        ...todoData.slice(index + 1),
-      ];
+      const newArr = [...todoData.slice(0, index), ...todoData.slice(index + 1)];
 
       return {
-        todoData: newArr
+        todoData: newArr,
       };
     });
   };
@@ -52,11 +37,7 @@ export default class App extends Component {
 
       const newItem = { ...oldItem, completed: !oldItem.completed };
 
-      const newArr = [
-        ...todoData.slice(0, index),
-        newItem,
-        ...todoData.slice(index + 1),
-      ];
+      const newArr = [...todoData.slice(0, index), newItem, ...todoData.slice(index + 1)];
 
       return {
         todoData: newArr,
@@ -65,7 +46,7 @@ export default class App extends Component {
   };
 
   addTask = (description) => {
-    const newItem = this.createTodoTask(description);
+    const newItem = this.createTodoTask(description, Date.now());
 
     this.setState(({ todoData }) => {
       const newArr = [...todoData, newItem];
@@ -79,13 +60,13 @@ export default class App extends Component {
   onClickFilters = (event) => {
     this.setState(() => {
       const filterValue = event.target.innerText.toLowerCase();
-      const filtersList = document.querySelector(".filters");
-      const filterItems = filtersList.querySelectorAll("button");
+      const filtersList = document.querySelector('.filters');
+      const filterItems = filtersList.querySelectorAll('button');
 
-      for (let filter of filterItems) {
-        filter.classList.remove("selected");
+      for (const filter of filterItems) {
+        filter.classList.remove('selected');
       }
-      event.target.classList.add("selected");
+      event.target.classList.add('selected');
 
       return {
         filter: filterValue,
@@ -94,22 +75,30 @@ export default class App extends Component {
   };
 
   onClickClearCompleted = () => {
-
     const idCompletedArr = [];
 
-    this.state.todoData.forEach( (item) => {
-        if(item.completed === true) {
-            idCompletedArr.push(item.id);
-        }
-    })
+    this.state.todoData.forEach((item) => {
+      if (item.completed === true) {
+        idCompletedArr.push(item.id);
+      }
+    });
 
-    for (let id of idCompletedArr) {
-        this.deleteTask(id);
+    for (const id of idCompletedArr) {
+      this.deleteTask(id);
     }
+  };
+
+  createTodoTask(description, created) {
+    return {
+      description,
+      created,
+      classname: 'active',
+      completed: false,
+      id: this.maxId++,
+    };
   }
 
   render() {
-
     const { todoData, filter } = this.state;
     const todoLeftCount = todoData.filter((el) => !el.completed).length;
 
@@ -122,14 +111,14 @@ export default class App extends Component {
         <section className="main">
           <TaskList
             todos={todoData}
-            filter = {filter }
+            filter={filter}
             onDeleted={this.deleteTask}
             onToggleCompleted={this.onToggleCompleted}
           />
           <Footer
             todoLeft={todoLeftCount}
             onClickFilters={this.onClickFilters}
-            onClickClearCompleted = {this.onClickClearCompleted}
+            onClickClearCompleted={this.onClickClearCompleted}
           />
         </section>
       </section>
