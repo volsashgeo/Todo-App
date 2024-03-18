@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import './tasks-filter.css';
 
 export default class TasksFilter extends Component {
+  static defaultProps = {
+    onClickFilters: () => {},
+  };
 
   render() {
     const { onClickFilters } = this.props;
@@ -21,7 +24,3 @@ export default class TasksFilter extends Component {
     );
   }
 }
-
-TasksFilter.defaultProps = {
-  onClickFilters: () => {},
-};

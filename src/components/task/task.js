@@ -4,7 +4,12 @@ import { formatDistanceToNow } from 'date-fns';
 import './task.css';
 
 export default class Task extends Component {
-
+  static defaultProps = {
+    classname: 'active',
+    onDeleted: () => {},
+    onToggleCompleted: () => {},
+    completed: false,
+  };
 
   render() {
     const { description, created, classname, onDeleted, onToggleCompleted, completed } = this.props;
@@ -47,10 +52,3 @@ export default class Task extends Component {
     }
   }
 }
-
-Task.defaultProps = {
-  classname: 'active',
-  onDeleted: () => {},
-  onToggleCompleted: () => {},
-  completed: false,
-};
